@@ -1,0 +1,12 @@
+#app {
+    width: 800px;    
+}
+.mainRow {
+    border: 1px solid;
+}
+.drugs {
+    border: 1px solid green;
+}
+.reaction {
+    border: 1px solid red;
+}
