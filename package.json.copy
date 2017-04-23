@@ -8,9 +8,12 @@
     "async": "~0.2.8",
     "body-parser": "^1.17.1",
     "express": "~3.2.4",
+    "gulp-babel": "^6.1.2",
     "moment": "^2.18.1",
     "mongodb": "^2.2.26",
+    "newman": "^3.5.2",
     "react": "^15.5.4",
+    "react-datepicker": "^0.46.0",
     "react-dom": "^15.5.4",
     "reactify": "^1.1.1",
     "socket.io": "~0.9.14"
@@ -19,8 +22,6 @@
     "start": "node server.js"
   },
   "devDependencies": {
-    "gulp-babel": "^6.1.2",
-    "newman": "^3.5.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "browser-sync": "^2.18.8",

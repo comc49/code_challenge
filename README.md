@@ -1,22 +1,21 @@
+welcome to my adverse event list/modify app!
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+This application was developed using cloud9(c9.io)
 
 
-Welcome to your Node.js project on Cloud9 IDE!
+Here is the direction to run the app (I suggest running it from cloud9 nodejs template)
 
-This chat example showcases how to use `socket.io` with a static `express` server.
+install npm, git, node
 
-## Running the server
+On your terminal enter:
 
-1) Open `server.js` and start the app by clicking on the "Run" button in the top menu.
+1. git clone https://github.com/comc49/code_challenge.git
+2. cd code_challenge
+3. npm install
+4. nodemon src/js/server.js
+5. sudo apt-get install -y mongodb-org
+6. mongod --smallfiles ( if you can't run mongod enter chmod a+x mongod)
 
-2) Alternatively you can launch the app from the Terminal:
+In your browser type:
 
-    $ node server.js
-
-Once the server is running, open the project in the shape of 'https://projectname-username.c9users.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
+1. http://localhost:8081/index.html
