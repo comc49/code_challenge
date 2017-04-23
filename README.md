@@ -27,8 +27,10 @@ I used Mongodb, React, Express, Node, Gulp
 2. build/js/bundle.js  (built using gulp+browserify on src/js/app.js)
 3. src/css/site.css
 
-##Back end 
+##Back end files
 1. src/js/server.js
-2. 
+
+##Build files
+1. gulpfile.js
 
 Design and coded by Brian Koo
