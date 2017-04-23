@@ -9,16 +9,16 @@ var url = 'mongodb://localhost:27017/adverse_events'
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // support json encoded bodies
-
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+//enables COR
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
   next();
 });
-
+//handles OPTION method
 app.options("/*", function(req, res, next){
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -27,7 +27,6 @@ app.options("/*", function(req, res, next){
 });
 
 app.use(express.static(path.join(__dirname, '../../')));
-//console.log(path.join(__dirname, "../../"))
 
 
 
@@ -43,7 +42,9 @@ const sendNewArr = (start,end, data) => {
   return a;
 }
 
-    
+//handles get requests
+//sends over documents. Limit is set to {end} number
+//using ES6 Promise
 app.get('/events', (req,res,next) => {
   var list = req.query.list.split('-');
   var start = list[0];
@@ -83,7 +84,7 @@ app.get('/events', (req,res,next) => {
           }
       );
 })
-
+// handles POST request, inserts document to the db
 app.post('/events', (req,res) => {
   var json = req.body
   var insertEvent = new Promise(
@@ -118,9 +119,8 @@ app.post('/events', (req,res) => {
 })
 
 
-    
+//handles DELETE requst, delete document using _id    
 app.delete('/events', (req,res,next) => {
-  console.log(req.method)
     var id = req.query.id;
     var deleteEvent = new Promise(
       (resolve,reject) => {
@@ -139,7 +139,6 @@ app.delete('/events', (req,res,next) => {
       deleteEvent.then(
         (data) => {
           var db = data[2];
-          console.log(data[1])
           data[0].remove(
             { _id: new ObjectID(data[1])}, (err,res) => {
             //can chain promises as well
@@ -153,49 +152,14 @@ app.delete('/events', (req,res,next) => {
             )
         }).catch (
           (reason) => {
-            //console.log("REASON",reason)
+            console.log("REASON",reason)
             
           }
         )
-        res.send('DELETE request to homepage');
+        res.send('DELETED');
 });
         
 
 app.listen(8081);
 
 
-
-
-
-    /*
-app.delete('/events', (req,res,next) => {
-    var id = req.query.id;
-    mongo.connect(url, (err,db) => {
-        if(err) {
-          console.log("SUP")
-            throw(err);
-        }
-        var events = db.collection("events");
-        events.remove({ _id: new ObjectID(id) }, (err,res) => {
-          if(err) throw err
-          console.log("WHAT IS GOING ON",res.result)
-          
-        })
-        db.close()
-    })
-})
-   */ 
-   
-/*       
-mongo.connect(url, (err,db) => {
-    if(err) throw err;
-    let col = db.collection(col_name);
-    col.remove({
-        _id: id
-    }, (err) => {
-        if(err) throw err
-        db.close();
-        
-    })
-})
-*/

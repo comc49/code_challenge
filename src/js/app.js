@@ -17,13 +17,14 @@ const returnList = (name,value,i) => {
         </li>
     );
 }
-
+//stateless component to bind function passed in
 const DeleteButton = ({func}) => {
     return (
         <button onClick = {func}></button>
         )
     
 }
+//stateless componet to show drug list
 const Drugs = ({data}) => {
     let jsx = data.reduce((acc,val,i) => {
         acc.push(
@@ -42,6 +43,7 @@ const Drugs = ({data}) => {
         </section>
         );
 }
+//stateless component to show patient list
 const Patient = ({data}) => {
     return (
         <ul>
@@ -64,6 +66,7 @@ const Patient = ({data}) => {
         </ul>
     ) 
 }
+//stateless component that create jsx obj containing reaction
 const Reaction = ({data}) => {
     let jsx = data.reduce((acc,val,i) => {
         acc.push(
@@ -87,7 +90,7 @@ const Reaction = ({data}) => {
         ) 
 }
     
-    
+//stateless component to show rows 
 const Rows = ({data}) => {
     return (
         <ul type="circle" >
@@ -301,15 +304,11 @@ class CreateForm extends React.Component {
         json.patient.drugs = drugArr;
         json.patient.reaction = reactionArr;
             
-        //axios.post(url+':8081/events',{ "hey": "SUP"}).then((res) => {
         axios.post(url+':8081/events',json).then((res) => {
             console.log(res);
         }).catch((err) => {
             throw err;
         })
-            
-        console.log(json)
-        console.log(this.state)
     }
 
     render() {
@@ -427,7 +426,6 @@ class Main extends React.Component {
         })
     }
     getList(number) {
-        console.log("GET LISTTT`")
         axios.get(url+':8081/events?list='+0+"-"+number).then((res) => {
             /*
             console.log("received data")
@@ -444,7 +442,6 @@ class Main extends React.Component {
         this.getList(10);
     }
     render() {
-        console.log("rendering");
         return(
            <App data={this.state.data} getList={()=> {this.getList(this.state.listSize)}}
            increaseSize={() => {this.increaseSize()}}

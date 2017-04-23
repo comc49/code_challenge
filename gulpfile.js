@@ -2,11 +2,8 @@
 var
   // modules
   gulp = require('gulp'),
-
-
   // development mode?
   devBuild = (process.env.NODE_ENV !== 'production'),
-
   // folders
   folder = {
     src: 'src/',
@@ -18,8 +15,9 @@ var babel        = require('gulp-babel');
 var reactify = require('reactify');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
- 
 var p = folder.src + 'js/app.js'
+
+//builds the app.js file which includes JSX to standard js
 gulp.task('build', function() {
     return browserify({
       entries: p,
@@ -32,6 +30,7 @@ gulp.task('build', function() {
         .pipe(gulp.dest('./build/js'))
 });
 
+//watch if files are changed and runs build task if change is detected
 gulp.task('watch', function() {
   gulp.watch('src/js/*.{js,jsx}', ['build']);
 });
