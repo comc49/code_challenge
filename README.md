@@ -12,8 +12,8 @@ On your terminal enter:
 1. git clone https://github.com/comc49/code_challenge.git
 2. cd code_challenge
 3. npm install
-4. nodemon src/js/server.js
-5. mongod --smallfiles ( if you can't run mongod enter chmod a+x mongod)
+4. node src/js/server.js &
+5. mongod --smallfiles &   ( if you can't run mongod enter chmod a+x mongod)
 
 In your browser type:
 
