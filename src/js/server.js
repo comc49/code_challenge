@@ -26,8 +26,8 @@ app.options("/*", function(req, res, next){
   res.send(200);
 });
 
-app.use(express.static(path.join(__dirname, '../../public')));
-console.log(path.join(__dirname, '../../public'))
+app.use(express.static(path.join(__dirname, '../../')));
+//console.log(path.join(__dirname, "../../"))
 
 
 
@@ -105,10 +105,9 @@ app.post('/events', (req,res) => {
       var events = data[0];
       var json = data[1]
       var db = data[2];
-      console.log(json)
       events.insertOne(json, (err, res) => {
         if(err) throw err;
-        console.log(res.result)
+        console.log("INSERTED!",res.result)
       })
       res.send("GOOD")
       db.close();
