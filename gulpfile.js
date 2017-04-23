@@ -55,9 +55,13 @@ gulp.task('build', function() {
         //Pass desired output filename to vinyl-source-stream
         .pipe(source('bundle.js'))
         // Start piping stream to tasks!
-        .pipe(gulp.dest('./build/js'));
+        .pipe(gulp.dest('./build/js'))
 });
-
+/*
+.catch((err) => {
+          console.log(err)
+        });
+        */
 gulp.task('watch', function() {
   gulp.watch('src/js/*.{js,jsx}', ['build']);
 });
@@ -73,4 +77,3 @@ gulp.task('concat',  function() {
 });
 
 */
-

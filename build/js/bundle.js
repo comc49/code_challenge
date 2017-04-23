@@ -24107,6 +24107,7 @@ let axios = require("axios")
 let url = 'https://code-challenge-briankoo.c9users.io';
 
 
+//stateless component to create html list
 const returnList = (name,value,i) => {
     return (
         React.createElement("li", {key: name+value+i}, 
@@ -24117,7 +24118,7 @@ const returnList = (name,value,i) => {
                 )
             )
         )
-        );
+    );
 }
 
 const DeleteButton = ({func}) => {
@@ -24220,16 +24221,266 @@ const Rows = ({data}) => {
         )
         );
 }
+//subcomponent for createForm component
+class CreateFormReaction extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+           meddraPrimaryTerm: ""
+        }
+    }
+    render() {
+        return (
+            React.createElement("div", null, 
+                "Reaction", 
+                React.createElement("div", {className: "reactionForm"}, 
+                    React.createElement("label", null, 
+                        "meddraPrimaryTerm", 
+                        React.createElement("input", {type: "text", name: "meddraPrimaryTerm", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true})
+                    )
+                )
+            )
+        );
+    }
+}
+//subcomponent for createForm component
+class CreateFormDrugs extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            autorizationNumber: "",
+            DosageText: "",
+            medicinalProduct: "",
+            drugIndication: "",
+        }
+    }
+    render() {
+                        //<input type="text" name="autorizationNumber" onChange={this.props.onChange.bind(this,this.props.keyV)} required/>
+        return (
+            React.createElement("div", null, 
+                "Drugs",  
+                React.createElement("div", {className: "drugsForm"}, 
+                    React.createElement("label", null, 
+                        "autorizationNumber", 
+                        React.createElement("input", {type: "text", name: "autorizationNumber", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        "DosageText", 
+                        React.createElement("input", {type: "text", name: "DosageText", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        "medicinalProduct", 
+                        React.createElement("input", {type: "text", name: "medicinalProduct", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        "drugIndication", 
+                        React.createElement("input", {type: "text", name: "drugIndication", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true})
+                    )
+                )
+            )
+        );
+    }
+}
+
+//controlled form react style
+class CreateForm extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            receiveDate: "",
+            receiptDate: "",
+            safetyReportId: "",
+            companyNumber: "",
+            numDrugs: [React.createElement(CreateFormDrugs, {keyV: "drug?"+0, key: 0, onChange: this.handleInputChange.bind(this)})],
+            numReaction: [React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), keyV: "reaction?"+0, key: 0})],
+            drugValues: [{}],
+            reactionValues: [{}],
+        }
+    }
+    addMoreDrugs() {
+        this.setState((prevState) => {
+            let a = prevState.numDrugs;
+            a.push(React.createElement(CreateFormDrugs, {keyV: "drug?"+a.length, key: a.length, onChange: this.handleInputChange.bind(this)}));
+            let a2 = prevState.drugValues;
+            a2.push({})
+            return {
+                numDrugs: a,
+                drugValues: a2,
+            }
+        })
+    }
+    deleteDrugs() {
+        this.setState((prevState) => {
+            if(prevState.numDrugs.length > 1) {
+                prevState.numDrugs.pop();
+                prevState.drugValues.pop();
+                return {
+                    numDrugs: prevState.numDrugs,
+                    drugValues: prevState.drugValues 
+                    
+                }
+            }
+        })
+    }
+    addMoreReaction() {
+        this.setState((prevState) => {
+            let a = prevState.numReaction;
+            let a2 = prevState.reactionValues;
+            a2.push({})
+            a.push(React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), keyV: "reaction?"+a.length, key: a.length}));
+            return {
+                numReaction: a,
+                reactionValues: a2,
+            }
+        })
+    }
+    deleteReaction() {
+        this.setState((prevState) => {
+            if(prevState.numReaction.length > 1) {
+                prevState.numReaction.pop();
+                prevState.reactionValues.pop();
+                return {
+                    numReaction: prevState.numReaction,
+                    reactionValues: prevState.reactionValues 
+                }
+            }
+        })
+    }
+    handleInputChange(event,key) {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        if(key) {
+            let [keyName,keyVal] = key.split("?");
+            
+            //console.log(keyName,keyVal,name)
+            
+            if(keyName === "drug") {
+                let newDrugValues = this.state.drugValues;
+                let d = this.state.drugValues[keyVal];
+                d[name] = value;
+                newDrugValues[keyVal] = d;
+                this.setState((prevState) => {
+                    return {
+                        drugValues: newDrugValues
+                    }
+                })
+            } 
+            if(keyName === "reaction") {
+                let newReactionValues = this.state.reactionValues;
+                let d = this.state.reactionValues[keyVal];
+                d[name] = value;
+                newReactionValues[keyVal] = d;
+                this.setState((prevState) => {
+                    return {
+                        reactionValues: newReactionValues
+                    }
+                })
+            }
+        } else {
+            this.setState( (prevState) => {
+              return {
+                  [name]: value
+              }
+            });
+        }
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        let json = {
+        	"receiveDate": this.state.receiveDate,
+        	"receiptDate": this.state.receiptDate,
+        	"patient": {
+        		"drugs": [],
+        		"reaction": [],
+        		"age": this.state.age,
+        		"sex": this.state.sex,
+        	},
+        	"safetyReportId": this.state.safetyReportId,
+        	"companyNumber": this.state.companyNumber,
+        }
+        let drugArr = this.state.drugValues.reduce((acc,val) => {
+            acc.push(val)
+            return acc;
+        },[])
+        let reactionArr = this.state.reactionValues.reduce((acc,val) => {
+            acc.push(val)
+            return acc;
+        },[])
+        json.patient.drugs = drugArr;
+        json.patient.reaction = reactionArr;
+            
+        //axios.post(url+':8081/events',{ "hey": "SUP"}).then((res) => {
+        axios.post(url+':8081/events',json).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            throw err;
+        })
+            
+        console.log(json)
+        console.log(this.state)
+    }
+
+    render() {
+        return (
+            React.createElement("form", {className: "createForm", onSubmit: this.handleSubmit}, 
+                React.createElement("h2", null, "CREATE FORM"), 
+                React.createElement("label", null, 
+                    React.createElement("ul", null, 
+                        React.createElement("li", null, 
+                            "receiveDate", 
+                            React.createElement("input", {type: "text", name: "receiveDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                        ), 
+                        React.createElement("li", null, 
+                            "receiptDate", 
+                            React.createElement("input", {type: "text", name: "receiptDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                        ), 
+                        React.createElement("li", null, 
+                            React.createElement("div", null, 
+                                "patient", 
+                                React.createElement("ul", null, 
+                                    React.createElement("li", null, 
+                                        this.state.numDrugs, 
+                                        React.createElement("button", {type: "button", onClick: ()=>{this.addMoreDrugs()}}, "Add more drugs"), 
+                                        React.createElement("button", {type: "button", onClick: ()=>{this.deleteDrugs()}}, "delete drugs")
+                                    ), 
+                                    React.createElement("li", null, 
+                                        this.state.numReaction, 
+                                        React.createElement("button", {type: "button", onClick: ()=>{this.addMoreReaction()}}, "Add more reaction"), 
+                                        React.createElement("button", {type: "button", onClick: ()=>{this.deleteReaction()}}, "delete reaction")
+                                    ), 
+                                    React.createElement("li", null, 
+                                        "age", 
+                                        React.createElement("input", {type: "text", name: "age", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                                    ), 
+                                    React.createElement("li", null, 
+                                        "sex", 
+                                        React.createElement("input", {type: "text", name: "sex", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                                    )
+                                )
+                            )
+                        ), 
+                        React.createElement("li", null, 
+                            "safetyReportId", 
+                            React.createElement("input", {type: "text", name: "safetyReportId", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                        ), 
+                        React.createElement("li", null, 
+                            "companyNumber", 
+                            React.createElement("input", {type: "text", name: "companyNumber", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                        )
+                    )
+                ), 
+                React.createElement("button", {type: "button", onClick: this.handleSubmit.bind(this)}, " Create ")
+            )
+        );  
+                //<input type="submit" value="Submit" />
+    }
+}
 
 class App extends React.Component {
     constructor(props) {
         super(props);
     }
     deleteBPressed(id) {
-        console.log(url+':8081/events?id='+id)
         axios.delete(url+':8081/events?id='+id).then((res) => {
+            /*
             console.log("deleted " + res);
             console.log("THIS",this)
+            */
             this.props.getList();
         });
     }
@@ -24254,6 +24505,7 @@ class App extends React.Component {
         let rows = this.populateRows(this.props.data);
         return (
             React.createElement("section", null, 
+                React.createElement(CreateForm, null), 
                 rows, 
                 React.createElement("button", {onClick: this.props.increaseSize}, "show 10 more ")
             )
@@ -24280,29 +24532,19 @@ class Main extends React.Component {
     getList(number) {
         console.log("GET LISTTT`")
         axios.get(url+':8081/events?list='+0+"-"+number).then((res) => {
+            /*
             console.log("received data")
             console.log(res.data)
+            */
              this.setState((prevState) => {
                return {data: res.data}
              })
-             /*
-             this.setState({
-               data: JSON.stringify(res.data)  
-             })
-             */
         }).catch((err) => {
             console.log(err)
         });
     }
     componentDidMount() {
         this.getList(10);
-    }
-    getMoreData(start,end) {
-        axios.get(url+':8081/events?list='+0+"-"+end).then((res) => {
-            //let data = JSON.stringify(res.data);
-        }).catch((err) => {
-            console.log(err);
-        });
     }
     render() {
         console.log("rendering");

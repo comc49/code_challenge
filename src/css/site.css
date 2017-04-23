@@ -10,3 +10,19 @@
 .reaction {
     border: 1px solid red;
 }
+.drugsForm {
+    border: 5px solid purple;
+    margin: 5px;
+    padding: 5px;
+}
+.createForm {
+    border: 5px solid yellow;
+    margin: 5px;
+    padding: 5px;
+}
+.reactionForm {
+    border: 5px solid gray;
+    margin: 5px;
+    padding: 5px;
+    
+}

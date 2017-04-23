@@ -1,16 +1,19 @@
 {
   "name": "code-challenge",
   "version": "0.0.0",
-  "description": "A chat example to showcase how to use `socket.io` with a static `express` server with `async` for control flow.",
+  "description": "Pull adverse events from mongodb database and list",
   "main": "server.js",
-  "author": "Mostafa Eweda <mo.eweda@gmail.com>",
+  "author": "Brian Koo <brian.koo.1991@gmail.com>",
   "dependencies": {
     "async": "~0.2.8",
+    "body-parser": "^1.17.1",
     "express": "~3.2.4",
     "gulp-babel": "^6.1.2",
+    "moment": "^2.18.1",
     "mongodb": "^2.2.26",
     "newman": "^3.5.2",
     "react": "^15.5.4",
+    "react-datepicker": "^0.46.0",
     "react-dom": "^15.5.4",
     "reactify": "^1.1.1",
     "socket.io": "~0.9.14"
