@@ -24232,6 +24232,27 @@ class CreateFormReaction extends React.Component {
            meddraPrimaryTerm: ""
         }
     }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.data) {
+            this.setState((prevState) => {
+                return {
+                    meddraPrimaryTerm: nextProps.data.meddraPrimaryTerm
+                }
+            })
+        }
+    }
+    handleChange(event,keyValue) {
+        let target = event.target;
+        let value = event.value;
+        let name = target.name;
+        
+        this.props.onChange(event,keyValue)
+        this.setState((prevState) => {
+            return {
+                [name]: value
+            }
+        })
+    }
     render() {
         return (
             React.createElement("div", null, 
@@ -24239,7 +24260,7 @@ class CreateFormReaction extends React.Component {
                 React.createElement("div", {className: "reactionForm"}, 
                     React.createElement("label", null, 
                         "meddraPrimaryTerm", 
-                        React.createElement("input", {type: "text", name: "meddraPrimaryTerm", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true})
+                        React.createElement("input", {type: "text", value: this.state.meddraPrimaryTerm, name: "meddraPrimaryTerm", onChange: (event) => {this.handleChange(event,this.props.keyV)}, required: true})
                     )
                 )
             )
@@ -24257,6 +24278,30 @@ class CreateFormDrugs extends React.Component {
             drugIndication: "",
         }
     }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.data) {
+            console.log("NEXT PROP",nextProps.data)
+            this.setState((prevState) => {
+               return {
+                   autorizationNumber: nextProps.data.autorizationNumber,
+                   DosageText: nextProps.data.DosageText,
+                   medicinalProduct: nextProps.data.medicinalProduct,
+                   drugIndication: nextProps.data.drugIndication,
+               } 
+            })
+        }
+    }
+    handleChange(event,keyValue) {
+        let target = event.target;
+        let value = target.value;
+        let name = target.name;
+        this.setState((prevState) => {
+            return {
+                [name] : value
+            }
+        })
+        this.props.onChange(event,keyValue);
+    }
     render() {
                         //<input type="text" name="autorizationNumber" onChange={this.props.onChange.bind(this,this.props.keyV)} required/>
         return (
@@ -24264,14 +24309,14 @@ class CreateFormDrugs extends React.Component {
                 "Drugs",  
                 React.createElement("div", {className: "drugsForm"}, 
                     React.createElement("label", null, 
-                        "autorizationNumber", 
-                        React.createElement("input", {type: "text", name: "autorizationNumber", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        "authorizationNumber", 
+                        React.createElement("input", {type: "text", value: this.state.autorizationNumber, name: "autorizationNumber", onChange: (event) => {this.handleChange(event,this.props.keyV)}, required: true}), 
                         "DosageText", 
-                        React.createElement("input", {type: "text", name: "DosageText", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        React.createElement("input", {type: "text", value: this.state.DosageText, name: "DosageText", onChange: (event) => {this.handleChange(event,this.props.keyV)}, required: true}), 
                         "medicinalProduct", 
-                        React.createElement("input", {type: "text", name: "medicinalProduct", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true}), 
+                        React.createElement("input", {type: "text", value: this.state.medicinalProduct, name: "medicinalProduct", onChange: (event) => {this.handleChange(event,this.props.keyV)}, required: true}), 
                         "drugIndication", 
-                        React.createElement("input", {type: "text", name: "drugIndication", onChange: (event) => {this.props.onChange(event,this.props.keyV)}, required: true})
+                        React.createElement("input", {type: "text", value: this.state.drugIndication, name: "drugIndication", onChange: (event) => {this.handleChange(event,this.props.keyV)}, required: true})
                     )
                 )
             )
@@ -24288,16 +24333,60 @@ class CreateForm extends React.Component {
             receiptDate: "",
             safetyReportId: "",
             companyNumber: "",
-            numDrugs: [React.createElement(CreateFormDrugs, {keyV: "drug?"+0, key: 0, onChange: this.handleInputChange.bind(this)})],
-            numReaction: [React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), keyV: "reaction?"+0, key: 0})],
+            numDrugs: [React.createElement(CreateFormDrugs, {keyV: "drug?"+0, 
+                key: 0, onChange: this.handleInputChange.bind(this)})],
+            numReaction: [React.createElement(CreateFormReaction, {
+                onChange: this.handleInputChange.bind(this), keyV: "reaction?"+0, key: 0})],
             drugValues: [{}],
             reactionValues: [{}],
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.data ? nextProps.data.patient ? nextProps.data.patient.drugs ? true: false : false : false) {
+            let dValues = [];
+            let arr = nextProps.data.patient.drugs.reduce((acc,val,i) => {
+                acc.push(React.createElement(CreateFormDrugs, {keyV: "drug?"+i, data: val, 
+                key: i, onChange: this.handleInputChange.bind(this)}))
+                dValues.push({});
+                return acc;
+            },[])
+            this.setState((prevState) => {
+                return {
+                    numDrugs: arr,
+                    drugValues: dValues,
+                    receiveDate: nextProps.data.receiveDate,
+                    receiptDate: nextProps.data.receiptDate,
+                    safetyReportId: nextProps.data.safetyReportId,
+                    companyNumber: nextProps.data.companyNumber,
+                    age: nextProps.data.patient.age,
+                    sex: nextProps.data.patient.sex,
+                }
+            });
+        }
+        if(nextProps.data ? nextProps.data.patient ? nextProps.data.patient.reaction ? true: false : false : false) {
+            let rValues = [];
+            let arr = nextProps.data.patient.reaction.reduce((acc,val,i) => {
+                console.log("REACTION",val)
+                acc.push(
+                React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), 
+                data: val, keyV: "reaction?"+i, key: i}))
+                console.log("VALUE",val)
+                rValues.push({})
+                return acc;
+            },[]);
+            this.setState((prevState) => {
+                return {
+                    numReaction: arr,
+                    reactionValues: rValues,
+                }
+            });
         }
     }
     addMoreDrugs() {
         this.setState((prevState) => {
             let a = prevState.numDrugs;
-            a.push(React.createElement(CreateFormDrugs, {keyV: "drug?"+a.length, key: a.length, onChange: this.handleInputChange.bind(this)}));
+            a.push(React.createElement(CreateFormDrugs, {keyV: "drug?"+a.length, data: this.props.data, 
+                key: a.length, onChange: this.handleInputChange.bind(this)}));
             let a2 = prevState.drugValues;
             a2.push({})
             return {
@@ -24324,7 +24413,8 @@ class CreateForm extends React.Component {
             let a = prevState.numReaction;
             let a2 = prevState.reactionValues;
             a2.push({})
-            a.push(React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), keyV: "reaction?"+a.length, key: a.length}));
+            a.push(React.createElement(CreateFormReaction, {onChange: this.handleInputChange.bind(this), 
+                data: this.props.data, keyV: "reaction?"+a.length, key: a.length}));
             return {
                 numReaction: a,
                 reactionValues: a2,
@@ -24344,13 +24434,14 @@ class CreateForm extends React.Component {
         })
     }
     handleInputChange(event,key) {
+        console.log("PLEWASSESHANDLEINPUT")
         const target = event.target;
         const value = target.value;
         const name = target.name;
         if(key) {
             let [keyName,keyVal] = key.split("?");
             
-            //console.log(keyName,keyVal,name)
+            console.log("KEYNAME!!",keyName,keyVal,name)
             
             if(keyName === "drug") {
                 let newDrugValues = this.state.drugValues;
@@ -24415,6 +24506,7 @@ class CreateForm extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             React.createElement("form", {className: "createForm", onSubmit: this.handleSubmit}, 
                 React.createElement("h2", null, "CREATE FORM"), 
@@ -24422,11 +24514,13 @@ class CreateForm extends React.Component {
                     React.createElement("ul", null, 
                         React.createElement("li", null, 
                             "receiveDate", 
-                            React.createElement("input", {type: "text", name: "receiveDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                            React.createElement("input", {type: "text", value: this.state.receiveDate, 
+                                name: "receiveDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
                         ), 
                         React.createElement("li", null, 
                             "receiptDate", 
-                            React.createElement("input", {type: "text", name: "receiptDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                            React.createElement("input", {type: "text", value: this.state.receiptDate, 
+                                name: "receiptDate", onChange: (event) => {this.handleInputChange(event)}, required: true})
                         ), 
                         React.createElement("li", null, 
                             React.createElement("div", null, 
@@ -24444,22 +24538,24 @@ class CreateForm extends React.Component {
                                     ), 
                                     React.createElement("li", null, 
                                         "age", 
-                                        React.createElement("input", {type: "text", name: "age", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                                        React.createElement("input", {type: "text", value: this.state.age, name: "age", onChange: (event) => {this.handleInputChange(event)}, required: true})
                                     ), 
                                     React.createElement("li", null, 
                                         "sex", 
-                                        React.createElement("input", {type: "text", name: "sex", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                                        React.createElement("input", {type: "text", value: this.state.sex, name: "sex", onChange: (event) => {this.handleInputChange(event)}, required: true})
                                     )
                                 )
                             )
                         ), 
                         React.createElement("li", null, 
                             "safetyReportId", 
-                            React.createElement("input", {type: "text", name: "safetyReportId", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                            React.createElement("input", {type: "text", value: this.state.safetyReportId, 
+                                name: "safetyReportId", onChange: (event) => {this.handleInputChange(event)}, required: true})
                         ), 
                         React.createElement("li", null, 
                             "companyNumber", 
-                            React.createElement("input", {type: "text", name: "companyNumber", onChange: (event) => {this.handleInputChange(event)}, required: true})
+                            React.createElement("input", {type: "text", value: this.state.companyNumber, 
+                                name: "companyNumber", onChange: (event) => {this.handleInputChange(event)}, required: true})
                         )
                     )
                 ), 
@@ -24473,6 +24569,9 @@ class CreateForm extends React.Component {
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            updateData: null
+        }
     }
     deleteBPressed(id) {
         axios.delete(url+':8081/events?id='+id).then((res) => {
@@ -24483,6 +24582,11 @@ class App extends React.Component {
             this.props.getList();
         });
     }
+    updateRow(data) {
+        this.setState((prevState) => {
+           return {updateData: data}
+        })
+    }
     populateRows (data) {
         if(data !== null) {
             let a = data.reduce((acc,val,i) => {
@@ -24491,6 +24595,9 @@ class App extends React.Component {
                         React.createElement(Rows, {data: val}), 
                         React.createElement("button", {onClick: () => {this.deleteBPressed(val._id)}}, 
                             "DELETE THIS EVENT"
+                        ), 
+                        React.createElement("button", {onClick: () => {this.updateRow(val)}}, 
+                            "UPDATE THIS EVENT"
                         )
                     )
                 ))
@@ -24502,9 +24609,11 @@ class App extends React.Component {
     }
     render() {
         let rows = this.populateRows(this.props.data);
+        
         return (
             React.createElement("section", null, 
                 React.createElement(CreateForm, null), 
+                React.createElement(CreateForm, {data: this.state.updateData}), 
                 rows, 
                 React.createElement("button", {onClick: this.props.increaseSize}, "show 10 more ")
             )

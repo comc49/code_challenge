@@ -16,7 +16,7 @@
     "socket.io": "~0.9.14"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/js/server.js"
   },
   "devDependencies": {
     "gulp-babel": "^6.1.2",
